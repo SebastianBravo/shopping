@@ -15,20 +15,22 @@ def main():
 
     # Load data from spreadsheet and split into train and test sets
     evidence, labels = load_data(sys.argv[1])
-    X_train, X_test, y_train, y_test = train_test_split(
-        evidence, labels, test_size=TEST_SIZE
-    )
+    # X_train, X_test, y_train, y_test = train_test_split(
+    #     evidence, labels, test_size=TEST_SIZE
+    # )
 
-    # Train model and make predictions
-    model = train_model(X_train, y_train)
-    predictions = model.predict(X_test)
-    sensitivity, specificity = evaluate(y_test, predictions)
+    # # Train model and make predictions
+    # model = train_model(X_train, y_train)
+    # predictions = model.predict(X_test)
+    # sensitivity, specificity = evaluate(y_test, predictions)
 
-    # Print results
-    print(f"Correct: {(y_test == predictions).sum()}")
-    print(f"Incorrect: {(y_test != predictions).sum()}")
-    print(f"True Positive Rate: {100 * sensitivity:.2f}%")
-    print(f"True Negative Rate: {100 * specificity:.2f}%")
+    # # Print results
+    # print(f"Correct: {(y_test == predictions).sum()}")
+    # print(f"Incorrect: {(y_test != predictions).sum()}")
+    # print(f"True Positive Rate: {100 * sensitivity:.2f}%")
+    # print(f"True Negative Rate: {100 * specificity:.2f}%")
+    print(evidence[0])
+    print(labels[0])
 
 
 def load_data(filename):
@@ -55,11 +57,59 @@ def load_data(filename):
         - TrafficType, an integer
         - VisitorType, an integer 0 (not returning) or 1 (returning)
         - Weekend, an integer 0 (if false) or 1 (if true)
-
+    
     labels should be the corresponding list of labels, where each label
     is 1 if Revenue is true, and 0 otherwise.
     """
-    raise NotImplementedError
+    months = {
+        "Jan": 0,
+        "Feb": 1,
+        "Mar": 2,
+        "Apr": 3,
+        "May": 4,
+        "June": 5,
+        "Jul": 6,
+        "Aug": 7,
+        "Sep": 8,
+        "Oct": 9,
+        "Nov": 10,
+        "Dec": 11
+        }
+    evidence = []
+    labels = []
+
+    with open(filename) as data_file:
+        data = csv.reader(data_file)
+        next(data)
+
+        for row in data:
+            evidence_row = []
+            n = 0 
+            for cell in row[:17]:
+                if n in [0, 2, 4, 11, 12, 13, 14]:
+                    evidence_row.append(int(cell))
+                if n in [1, 3, 5, 6, 7, 8, 9]:
+                    evidence_row.append(float(cell))
+                if n == 10:
+                    evidence_row.append(months[cell])
+                if n == 15:
+                    if cell == "Returning_Visitor":
+                        evidence_row.append(1)
+                    else: 
+                        evidence_row.append(0)
+                if n == 16:
+                    if cell == "True":
+                        evidence_row.append(1)
+                    else:
+                        evidence_row.append(0)
+                n += 1
+            evidence.append(evidence_row)
+            if row[17] == "True":
+                labels.append(1)
+            else:
+                labels.append(0)
+
+    return((evidence, labels))
 
 
 def train_model(evidence, labels):
