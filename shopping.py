@@ -15,22 +15,20 @@ def main():
 
     # Load data from spreadsheet and split into train and test sets
     evidence, labels = load_data(sys.argv[1])
-    # X_train, X_test, y_train, y_test = train_test_split(
-    #     evidence, labels, test_size=TEST_SIZE
-    # )
+    X_train, X_test, y_train, y_test = train_test_split(
+        evidence, labels, test_size=TEST_SIZE
+    )
 
-    # # Train model and make predictions
-    # model = train_model(X_train, y_train)
-    # predictions = model.predict(X_test)
-    # sensitivity, specificity = evaluate(y_test, predictions)
+    # Train model and make predictions
+    model = train_model(X_train, y_train)
+    predictions = model.predict(X_test)
+    sensitivity, specificity = evaluate(y_test, predictions)
 
-    # # Print results
-    # print(f"Correct: {(y_test == predictions).sum()}")
-    # print(f"Incorrect: {(y_test != predictions).sum()}")
-    # print(f"True Positive Rate: {100 * sensitivity:.2f}%")
-    # print(f"True Negative Rate: {100 * specificity:.2f}%")
-    print(evidence[0])
-    print(labels[0])
+    # Print results
+    print(f"Correct: {(y_test == predictions).sum()}")
+    print(f"Incorrect: {(y_test != predictions).sum()}")
+    print(f"True Positive Rate: {100 * sensitivity:.2f}%")
+    print(f"True Negative Rate: {100 * specificity:.2f}%")
 
 
 def load_data(filename):
@@ -117,7 +115,8 @@ def train_model(evidence, labels):
     Given a list of evidence lists and a list of labels, return a
     fitted k-nearest neighbor model (k=1) trained on the data.
     """
-    raise NotImplementedError
+    model = KNeighborsClassifier(n_neighbors=1)
+    model.fit(evidence, labels)
 
 
 def evaluate(labels, predictions):
