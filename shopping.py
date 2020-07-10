@@ -18,7 +18,6 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(
         evidence, labels, test_size=TEST_SIZE
     )
-
     # Train model and make predictions
     model = train_model(X_train, y_train)
     predictions = model.predict(X_test)
@@ -102,12 +101,12 @@ def load_data(filename):
                         evidence_row.append(0)
                 n += 1
             evidence.append(evidence_row)
-            if row[17] == "True":
+            if row[17] == "TRUE":
                 labels.append(1)
             else:
                 labels.append(0)
 
-    return((evidence, labels))
+    return (evidence, labels)
 
 
 def train_model(evidence, labels):
@@ -116,7 +115,8 @@ def train_model(evidence, labels):
     fitted k-nearest neighbor model (k=1) trained on the data.
     """
     model = KNeighborsClassifier(n_neighbors=1)
-    model.fit(evidence, labels)
+    
+    return model.fit(evidence, labels)
 
 
 def evaluate(labels, predictions):
@@ -134,7 +134,22 @@ def evaluate(labels, predictions):
     representing the "true negative rate": the proportion of
     actual negative labels that were accurately identified.
     """
-    raise NotImplementedError
+    actual_positive = labels.count(1)
+    actual_negative = labels.count(0)
+
+    positive_identified = 0
+    negative_identified = 0
+
+    for actual, predicted in zip(labels, predictions):
+        if actual == 1 and predicted == 1:
+            positive_identified += 1
+        if actual == 0 and predicted == 0:
+            negative_identified += 1
+
+    sensitivity = positive_identified / actual_positive
+    specificity = negative_identified / actual_negative
+
+    return (sensitivity, specificity)
 
 
 if __name__ == "__main__":
