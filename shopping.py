@@ -58,6 +58,7 @@ def load_data(filename):
     labels should be the corresponding list of labels, where each label
     is 1 if Revenue is true, and 0 otherwise.
     """
+    # Dictionary to get the number of a month
     months = {
         "Jan": 0,
         "Feb": 1,
@@ -72,13 +73,17 @@ def load_data(filename):
         "Nov": 10,
         "Dec": 11
         }
+
+    # Initialize empty lists to keep track of evidence and labels
     evidence = []
     labels = []
 
+    # Read the csv file
     with open(filename) as data_file:
         data = csv.reader(data_file)
         next(data)
 
+        # Add evidence and labels for each row in the data file
         for row in data:
             evidence_row = []
             n = 0 
@@ -134,18 +139,22 @@ def evaluate(labels, predictions):
     representing the "true negative rate": the proportion of
     actual negative labels that were accurately identified.
     """
+    # Varibles to keep track of actual positives and negatives
     actual_positive = labels.count(1)
     actual_negative = labels.count(0)
 
+    # Initialize variables for positive and negatives identified
     positive_identified = 0
     negative_identified = 0
 
+    # Update counters
     for actual, predicted in zip(labels, predictions):
         if actual == 1 and predicted == 1:
             positive_identified += 1
         if actual == 0 and predicted == 0:
             negative_identified += 1
 
+    # Calculate sensitivity and specificity 
     sensitivity = positive_identified / actual_positive
     specificity = negative_identified / actual_negative
 
